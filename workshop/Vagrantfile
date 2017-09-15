@@ -1,0 +1,42 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.require_version('>= 2.0')
+unless Vagrant.has_plugin?('vagrant-vyos')
+  system('vagrant plugin install vagrant-vyos') || exit!
+  exit system('vagrant', *ARGV)
+end
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "higebu/vyos"
+
+  config.vm.define "hub", primary: true do |hub|
+    config.vm.provider "virtualbox" do |v|
+      v.name = "hub"
+      v.linked_clone = true
+    end
+
+    hub.vm.hostname = "hub"
+    hub.vm.network "private_network", ip: "10.0.0.1"
+  end
+
+  config.vm.define "spoke1" do |spoke1|
+    config.vm.provider "virtualbox" do |v|
+      v.name = "spoke1"
+      v.linked_clone = true
+    end
+
+    spoke1.vm.hostname = "spoke1"
+    spoke1.vm.network "private_network", ip: "10.0.0.11"
+  end
+
+  config.vm.define "spoke2" do |spoke2|
+    config.vm.provider "virtualbox" do |v|
+      v.name = "spoke2"
+      v.linked_clone = true
+    end
+
+    spoke2.vm.hostname = "spoke2"
+    spoke2.vm.network "private_network", ip: "10.0.0.12"
+  end
+end

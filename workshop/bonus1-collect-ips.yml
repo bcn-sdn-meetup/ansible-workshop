@@ -1,0 +1,6 @@
+---
+- name: Collect IPs
+  hosts: all
+  connection: local
+  tasks:
+    - debug: var=

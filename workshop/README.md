@@ -11,7 +11,7 @@
 
 There are 3 [VyOS](https://vyos.io) hosts available:
 
-* hub - 10.0.0.1
+* hub - 10.0.0.254
 * spoke1 - 10.0.0.11
 * spoke2 - 10.0.0.12
 

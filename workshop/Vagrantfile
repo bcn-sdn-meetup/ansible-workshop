@@ -10,6 +10,28 @@ end
 Vagrant.configure("2") do |config|
   config.vm.box = "higebu/vyos"
 
+  config.vm.define "control" do |control|
+    control.vm.box = "ubuntu/xenial64"
+    control.vm.provider "virtualbox" do |v|
+      v.name = "control"
+      v.linked_clone = true
+    end
+
+    control.vm.hostname = "control"
+    control.vm.network "private_network", ip: "10.0.0.250"
+
+    $script = <<SCRIPT
+sudo apt-get update
+sudo apt-get install -y software-properties-common
+sudo apt-add-repository ppa:ansible/ansible
+sudo apt-get update
+sudo apt-get install -y ansible
+chmod 600 /vagrant/.ssh/vagrant
+SCRIPT
+
+    control.vm.provision "shell", inline: $script 
+  end
+
   config.vm.define "hub", primary: true do |hub|
     config.vm.provider "virtualbox" do |v|
       v.name = "hub"
@@ -17,7 +39,7 @@ Vagrant.configure("2") do |config|
     end
 
     hub.vm.hostname = "hub"
-    hub.vm.network "private_network", ip: "10.0.0.1"
+    hub.vm.network "private_network", ip: "10.0.0.254"
   end
 
   config.vm.define "spoke1" do |spoke1|

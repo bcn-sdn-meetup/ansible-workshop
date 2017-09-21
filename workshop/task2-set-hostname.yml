@@ -1,0 +1,15 @@
+---
+- name: Set FQDN hostname
+  hosts: hub
+  connection: local
+  gather_facts: false
+  tasks:
+    - vyos_config:
+        lines:
+          - set system host-name hub.example.com
+    - vyos_command:
+        commands:
+          - hostname
+      register: hostname
+    - debug: var=hostname.stdout
+
